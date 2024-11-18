@@ -49,15 +49,7 @@ jobs:
         kubectl config set-context --current --namespace=default
         kubectl config current-context
         kubectl get nodes
-
-    - name: Validate Kubernetes Context
-      run: |
-        kubectl config current-context
-        kubectl config get-contexts
-
-
-    - name: Apply Frontend Deployment
-      run: kubectl apply -f ./k8s/frontend.yaml
+        kubectl apply -f ./k8s/frontend.yaml
 
     - name: Apply Backend Deployment
       run: kubectl apply -f ./k8s/backend.yaml
