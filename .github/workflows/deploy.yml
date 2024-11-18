@@ -23,6 +23,10 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Set Azure CLI Context
+      run: |
+        az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     - name: Log in to ACR
       run: |
         podman login ${{ secrets.ACR_NAME }}.azurecr.io -u $(az acr credential show --name ${{ secrets.ACR_NAME }} --query username -o tsv) -p $(az acr credential show --name ${{ secrets.ACR_NAME }} --query passwords[0].value -o tsv)
@@ -38,24 +42,11 @@ jobs:
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
     - name: Set Up Kubernetes Context
-      env:
-        KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
       run: |
-        echo "$KUBECONFIG" > kubeconfig
-        export KUBECONFIG=$(pwd)/kubeconfig
-
-        # Write kubeconfig content to a file
-        echo "$KUBECONFIG" > kubeconfig.yaml
-
-        # Set the KUBECONFIG environment variable
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
-
-        # Validate kubeconfig and set the current context
-        kubectl config current-context || echo "No current context set."
-
-        # Ensure credentials are refreshed
-        kubectl get nodes || echo "Failed to connect to cluster."
-
+        kubectl config current-context
+        kubectl get nodes
 
     - name: Apply Frontend Deployment
       run: kubectl apply -f ./k8s/frontend.yaml
