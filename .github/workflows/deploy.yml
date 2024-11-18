@@ -41,7 +41,7 @@ jobs:
         podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest ./restaurant-menu-backend
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
-    - name: Set Up Kubernetes Context
+    - name: Set Up Kubernetes Context & Apply Deployment
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
@@ -50,6 +50,4 @@ jobs:
         kubectl config current-context
         kubectl get nodes
         kubectl apply -f ./k8s/frontend.yaml
-
-    - name: Apply Backend Deployment
-      run: kubectl apply -f ./k8s/backend.yaml
+        kubectl apply -f ./k8s/backend.yaml
