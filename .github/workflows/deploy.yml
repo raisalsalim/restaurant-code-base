@@ -46,7 +46,14 @@ jobs:
         echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
         kubectl config current-context
+        kubectl config use-context aks-backend-cluster
         kubectl get nodes
+
+    - name: Validate Kubernetes Context
+      run: |
+        kubectl config current-context
+        kubectl config get-contexts
+
 
     - name: Apply Frontend Deployment
       run: kubectl apply -f ./k8s/frontend.yaml
