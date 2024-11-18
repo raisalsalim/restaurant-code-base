@@ -44,6 +44,19 @@ jobs:
         echo "$KUBECONFIG" > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
 
+        # Write kubeconfig content to a file
+        echo "$KUBECONFIG" > kubeconfig.yaml
+
+        # Set the KUBECONFIG environment variable
+        export KUBECONFIG=$(pwd)/kubeconfig.yaml
+
+        # Validate kubeconfig and set the current context
+        kubectl config current-context || echo "No current context set."
+
+        # Ensure credentials are refreshed
+        kubectl get nodes || echo "Failed to connect to cluster."
+
+
     - name: Apply Frontend Deployment
       run: kubectl apply -f ./k8s/frontend.yaml
 
