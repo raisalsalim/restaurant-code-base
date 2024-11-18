@@ -29,12 +29,12 @@ jobs:
 
     - name: Build and Push Frontend Image
       run: |
-        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest ./frontend
+        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest ./restaurant-menu-frontend
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest
 
     - name: Build and Push Backend Image
       run: |
-        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest ./backend
+        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest ./restaurant-menu-backend
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
     - name: Set Up Kubernetes Context
