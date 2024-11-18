@@ -1,0 +1,51 @@
+name: Build, Push, and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Podman
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install podman
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to ACR
+      run: |
+        podman login ${{ secrets.ACR_NAME }}.azurecr.io -u $(az acr credential show --name ${{ secrets.ACR_NAME }} --query username -o tsv) -p $(az acr credential show --name ${{ secrets.ACR_NAME }} --query passwords[0].value -o tsv)
+
+    - name: Build and Push Frontend Image
+      run: |
+        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest ./frontend
+        podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest
+
+    - name: Build and Push Backend Image
+      run: |
+        podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest ./backend
+        podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
+
+    - name: Set Up Kubernetes Context
+      env:
+        KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
+      run: |
+        echo "$KUBECONFIG" > kubeconfig
+        export KUBECONFIG=$(pwd)/kubeconfig
+
+    - name: Apply Frontend Deployment
+      run: kubectl apply -f ./k8s/frontend.yaml
+
+    - name: Apply Backend Deployment
+      run: kubectl apply -f ./k8s/backend.yaml
