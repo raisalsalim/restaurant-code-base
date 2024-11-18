@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tibp-9$6a(gs0n&bk$ro(t%5&5k(_hcp8&74_j9l_2!u%caxoy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
