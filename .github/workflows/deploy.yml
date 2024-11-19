@@ -56,19 +56,18 @@ jobs:
         kubectl apply -f ./k8s/frontend.yaml
         kubectl apply -f ./k8s/backend.yaml
 
-    - name: Get External IP and Port of Frontend Service
-      run: |
-        # Get the external IP of the frontend service
-        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        
-        # Wait for the IP to be assigned (optional, depending on the load balancer setup)
-        while [ -z "$EXTERNAL_IP" ]; do
-          echo "Waiting for the external IP to be assigned..."
-          sleep 10
-          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        done
+       # Get the external IP of the frontend service
+       EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-        # Get the external port (if using a NodePort service)
-        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].nodePort}')
-        
-        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
+       # Wait for the IP to be assigned (optional, depending on load balancer setup)
+       while [ -z "$EXTERNAL_IP" ]; do
+         echo "Waiting for the external IP to be assigned..."
+         sleep 10
+         EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+       done
+
+       # Get the external port (for NodePort service)
+       EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
+
+       # Output the access URL
+       echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
