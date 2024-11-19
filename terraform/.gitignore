@@ -1,0 +1,45 @@
+# Node.js / Frontend
+node_modules/
+.next/
+dist/
+out/
+build/
+
+# Python / Backend
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.override
+override.tf
+override.tf.json
+crash.log
+*.tfplan
+
+# Kubernetes
+k8s/*.yaml
+kubeconfig.yaml
+
+# Docker / Podman
+*.img
+*.tar
+*.log
+
+# MacOS-specific
+.DS_Store
+
+# Windows-specific
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment Files
+.env
+*.env
