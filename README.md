@@ -14,19 +14,21 @@ This repository contains the codebase and infrastructure definitions for deployi
 
 │ ├── k8s/ \# Kubernetes manifests for deployment
 
+│ ├── .github/ \# GitHub Actions Workflow YAML
+
 │ └── kubeconfig.yaml \# Kubernetes configuration file for AKS
 
 │
 
 └── terraform/ \# Infrastructure as Code (Terraform)
 
-├── acr/ \# Azure Container Registry (ACR)
+   ├── acr/ \# Azure Container Registry (ACR)
 
-├── database/ \# PostgreSQL database (Azure Database for PostgreSQL)
+   ├── database/ \# PostgreSQL database (Azure Database for PostgreSQL)
 
-├── kubernetes/ \# Azure Kubernetes Service (AKS)
+   ├── kubernetes/ \# Azure Kubernetes Service (AKS)
 
-└── network/ \# Virtual Network and Subnets
+   └── network/ \# Virtual Network and Subnets
 
 ## 
 
