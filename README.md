@@ -16,8 +16,6 @@ This repository contains the codebase and infrastructure definitions for deployi
 
 │ ├── .github/ \# GitHub Actions Workflow YAML
 
-│ └── kubeconfig.yaml \# Kubernetes configuration file for AKS
-
 │
 
 └── terraform/ \# Infrastructure as Code (Terraform)
