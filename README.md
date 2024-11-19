@@ -3,7 +3,7 @@
 This repository contains the codebase and infrastructure definitions for deploying a fullstack **Restaurant Menu Application**. The setup uses **Terraform** for provisioning cloud infrastructure and **GitHub Actions** for automating the CI/CD pipeline.
 
 ## **Project Structure**
-
+```
 .
 
 ├── restaurant-code-base/ \# Codebase for the Restaurant Menu Application
@@ -29,7 +29,7 @@ This repository contains the codebase and infrastructure definitions for deployi
    ├── kubernetes/ \# Azure Kubernetes Service (AKS)
 
    └── network/ \# Virtual Network and Subnets
-
+```
 ## 
 
 ## **Overview**
@@ -76,21 +76,19 @@ The repository leverages **GitHub Actions** to:
 Navigate to the terraform/ directory and follow the steps below:
 
 #### **Initialize Terraform**
-
+```
 $ cd terraform/\<module\>
 
 $ terraform init
-
+```
 #### **Apply Terraform Configurations** 
 
 For each module (network, database, acr, kubernetes), run:
-
-$ terraform init
-
+```
 $ Terraform plan
 
 $ terraform apply
-
+```
 #### **Outputs**
 
 Ensure all outputs are configured correctly before proceeding.
@@ -107,17 +105,17 @@ GitHub Actions will automatically:
 #### **Deploy to AKS** 
 
 The Kubernetes manifests in k8s/ are applied to deploy the backend and frontend:
-
+```
 $ kubectl apply \-f k8s/frontend.yaml
 
 $ kubectl apply \-f k8s/backend.yaml
-
+```
 #### **Access the Application**
 
 After deployment, the frontend service will expose an external IP. Retrieve it using:
-
+```
 $ kubectl get service frontend-service
-
+```
 Access the app at:
 
 http://\<EXTERNAL\_IP\>:3000
