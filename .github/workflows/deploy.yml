@@ -55,30 +55,14 @@ jobs:
         kubectl get nodes
         kubectl apply -f ./k8s/frontend.yaml
         kubectl apply -f ./k8s/backend.yaml
-        kubectl apply -f ./k8s/nginx-ingress.yaml
-        kubectl wait --for=condition=available --timeout=600s deployment/ingress-nginx-controller -n ingress-nginx
-        kubectl apply -f ./k8s/ingress.yaml
 
-        EXTERNAL_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    
-        # Keep checking until the EXTERNAL_IP is assigned
+        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         while [ -z "$EXTERNAL_IP" ]; do
-          echo "Waiting for the external IP to be assigned to the NGINX Ingress Controller..."
+          echo "Waiting for the external IP to be assigned..."
           sleep 10
-          EXTERNAL_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         done
 
-        echo "NGINX Ingress Controller is ready!"
-        echo "Now you can access your frontend app at http://frontend.raazresto.com"
-        echo "Now you can access your backend app at http://backend.raazresto.com"
-        echo "NGINX Ingress Controller External IP: $EXTERNAL_IP"
-#        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#        while [ -z "$EXTERNAL_IP" ]; do
-#          echo "Waiting for the external IP to be assigned..."
-#          sleep 10
-#          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#        done
-#
-#        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
-#
-#        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
+        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
+
+        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
