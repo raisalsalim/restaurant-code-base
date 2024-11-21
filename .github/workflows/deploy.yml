@@ -55,6 +55,8 @@ jobs:
         kubectl get nodes
         kubectl apply -f ./k8s/frontend.yaml
         kubectl apply -f ./k8s/backend.yaml
+        kubectl apply -f ./k8s/nginx-ingress.yaml
+        kubectl apply -f ./k8s/ingress.yaml
 
         EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         while [ -z "$EXTERNAL_IP" ]; do

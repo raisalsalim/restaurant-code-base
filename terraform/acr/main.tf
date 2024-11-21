@@ -14,10 +14,10 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   scope                = azurerm_container_registry.acr.id
 }
 
-resource "null_resource" "aks_attach_acr" {
-  depends_on = [azurerm_container_registry.acr]
-
-  provisioner "local-exec" {
-    command = "az aks update -n ${var.aks_cluster_name} -g ${var.resource_group_name} --attach-acr ${azurerm_container_registry.acr.name}"
-  }
-}
+#resource "null_resource" "aks_attach_acr" {
+#  depends_on = [azurerm_container_registry.acr]
+#
+#  provisioner "local-exec" {
+#    command = "az aks update -n ${var.aks_cluster_name} -g ${var.resource_group_name} --attach-acr ${azurerm_container_registry.acr.name}"
+#  }
+#}

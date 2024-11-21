@@ -9,14 +9,14 @@ resource "azurerm_postgresql_flexible_server" "postgresql" {
   sku_name                     = "GP_Standard_D2s_v3"
   zone                         = "1"
 
-  high_availability {
-    mode                        = "ZoneRedundant"
-    standby_availability_zone   = "2"
-  }
-
-  timeouts {
-    create = "30m"
-  }
+#  high_availability {
+#    mode                        = "ZoneRedundant"
+#    standby_availability_zone   = "2"
+#  }
+#
+#  timeouts {
+#    create = "30m"
+#  }
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_ip" {
