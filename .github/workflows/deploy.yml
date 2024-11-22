@@ -47,22 +47,36 @@ jobs:
         podman tag ${{ secrets.ACR_NAME }}.azurecr.io/$BACKEND_IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
-    - name: Set Up Kubernetes Context & Apply Deployment
+    - name: Set Up Kubernetes Context
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
         kubectl config use-context aks-backend-cluster
         kubectl get nodes
-        kubectl apply -f ./k8s/frontend.yaml
-        kubectl apply -f ./k8s/backend.yaml
 
-        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        while [ -z "$EXTERNAL_IP" ]; do
-          echo "Waiting for the external IP to be assigned..."
-          sleep 10
-          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        done
+    - name: Create Namespace in AKS (if not exists)
+      run: |
+        kubectl create namespace restaurant || echo "Namespace 'restaurant' already exists."
 
-        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
+    - name: Install Argo CD CLI
+      run: |
+        curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.8.5/argocd-linux-amd64
+        chmod +x /usr/local/bin/argocd
 
-        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
+    - name: Port Forward Argo CD UI
+      run: |
+        kubectl port-forward svc/argocd-server -n argocd 8480:80 &
+        echo "Argo CD is accessible at http://localhost:8480"
+
+    - name: Create Argo CD Application for Deployment
+      run: |
+        argocd app create restaurant-app \
+          --repo https://github.com/yourusername/restaurant-app.git \
+          --path k8s \
+          --dest-server https://kubernetes.default.svc \
+          --dest-namespace restaurant
+
+    - name: Sync Application via Argo CD
+      run: |
+        argocd app sync restaurant-app
+        echo "Application deployment initiated through Argo CD."
