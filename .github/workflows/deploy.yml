@@ -47,22 +47,22 @@ jobs:
         podman tag ${{ secrets.ACR_NAME }}.azurecr.io/$BACKEND_IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
-    # - name: Set Up Kubernetes Context & Apply Deployment
-    #   run: |
-    #     echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
-    #     export KUBECONFIG=$(pwd)/kubeconfig.yaml
-    #     kubectl config use-context aks-backend-cluster
-    #     kubectl get nodes
-    #     kubectl apply -f ./k8s/frontend.yaml
-    #     kubectl apply -f ./k8s/backend.yaml
+    - name: Set Up Kubernetes Context & Apply Deployment
+      run: |
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
+        export KUBECONFIG=$(pwd)/kubeconfig.yaml
+        kubectl config use-context aks-backend-cluster
+        kubectl get nodes
+        kubectl apply -f ./k8s/frontend.yaml
+        kubectl apply -f ./k8s/backend.yaml
 
-    #     EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    #     while [ -z "$EXTERNAL_IP" ]; do
-    #       echo "Waiting for the external IP to be assigned..."
-    #       sleep 10
-    #       EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    #     done
+        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        while [ -z "$EXTERNAL_IP" ]; do
+          echo "Waiting for the external IP to be assigned..."
+          sleep 10
+          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        done
 
-    #     EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
+        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
 
-    #     echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
+        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
