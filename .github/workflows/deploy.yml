@@ -53,8 +53,8 @@ jobs:
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
         kubectl config use-context aks-backend-cluster
         kubectl get nodes
-        kubectl apply -f ./k8s/frontend.yaml
-        kubectl apply -f ./k8s/backend.yaml
+        kubectl apply -f ./k8s/argocd-frontend-app.yaml
+        kubectl apply -f ./k8s/argocd-backend-app.yaml
 
         EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         while [ -z "$EXTERNAL_IP" ]; do
