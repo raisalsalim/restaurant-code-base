@@ -59,19 +59,8 @@ jobs:
         kubectl wait --for=condition=available --timeout=600s deployment/ingress-nginx-controller -n ingress-nginx
         kubectl apply -f ./k8s/ingress.yaml
 
-        EXTERNAL_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    
-        # Keep checking until the EXTERNAL_IP is assigned
-        while [ -z "$EXTERNAL_IP" ]; do
-          echo "Waiting for the external IP to be assigned to the NGINX Ingress Controller..."
-          sleep 10
-          EXTERNAL_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        done
-
-        echo "NGINX Ingress Controller is ready!"
         echo "Now you can access your frontend app at http://frontend.raazresto.com"
         echo "Now you can access your backend app at http://backend.raazresto.com"
-        echo "NGINX Ingress Controller External IP: $EXTERNAL_IP"
 #        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 #        while [ -z "$EXTERNAL_IP" ]; do
 #          echo "Waiting for the external IP to be assigned..."
