@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/raisalsalim/restaurant-code-base.git
+    repoURL: https://github.com/raisalsalim/restaurant-manifests.git
     targetRevision: main
-    path: k8s
+    path: .
   destination:
     server: https://kubernetes.default.svc
     namespace: default

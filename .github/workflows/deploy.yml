@@ -55,14 +55,3 @@ jobs:
         kubectl get nodes
         kubectl apply -f ./k8s/argocd-frontend-app.yaml
         kubectl apply -f ./k8s/argocd-backend-app.yaml
-
-        EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        while [ -z "$EXTERNAL_IP" ]; do
-          echo "Waiting for the external IP to be assigned..."
-          sleep 10
-          EXTERNAL_IP=$(kubectl get service frontend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        done
-
-        EXTERNAL_PORT=$(kubectl get service frontend-service -o jsonpath='{.spec.ports[0].port}')
-
-        echo "Now you can access your frontend app at http://$EXTERNAL_IP:$EXTERNAL_PORT"
