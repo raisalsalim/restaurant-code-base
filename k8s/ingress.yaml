@@ -5,7 +5,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx
   rules:
   - host: frontend.raazresto.com
     http:
@@ -25,7 +24,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-ingressClassName: nginx
   rules:
   - host: backend.raazresto.com
     http:
