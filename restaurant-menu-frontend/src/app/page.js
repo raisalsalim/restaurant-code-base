@@ -13,7 +13,7 @@ export default function Home() {
   // Fetch menu items from the backend
   useEffect(() => {
     axios
-      .get("http://20.244.69.204:8000/api/menu-items/") // Adjust the URL to match your backend
+      .get("http://4.224.95.188:8000/api/menu-items/") // Adjust the URL to match your backend
       .then((response) => {
         setMenuItems(response.data);
       })
@@ -25,7 +25,7 @@ export default function Home() {
   // Handle create new menu item
   const handleCreate = () => {
     axios
-      .post("http://20.244.69.204:8000/api/menu-items/", newItem) // Sending new item to backend
+      .post("http://4.224.95.188:8000/api/menu-items/", newItem) // Sending new item to backend
       .then((response) => {
         setMenuItems([...menuItems, response.data]); // Add the new item to the list
         setNewItem({ name: "", price: "" }); // Reset form
@@ -38,7 +38,7 @@ export default function Home() {
   // Handle update existing menu item
   const handleUpdate = () => {
     axios
-      .put(`http://20.244.69.204:8000/api/menu-items/${editItem.id}/`, editItem) // Sending updated item
+      .put(`http://4.224.95.188:8000/api/menu-items/${editItem.id}/`, editItem) // Sending updated item
       .then((response) => {
         const updatedItems = menuItems.map((item) =>
           item.id === editItem.id ? response.data : item
@@ -55,7 +55,7 @@ export default function Home() {
   // Handle delete menu item
   const handleDelete = (id) => {
     axios
-      .delete(`http://20.244.69.204:8000/api/menu-items/${id}/`) // Deleting item
+      .delete(`http://4.224.95.188:8000/api/menu-items/${id}/`) // Deleting item
       .then(() => {
         setMenuItems(menuItems.filter((item) => item.id !== id)); // Remove deleted item from the list
       })
