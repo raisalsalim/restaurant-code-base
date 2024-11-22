@@ -71,7 +71,7 @@ jobs:
     - name: Create Argo CD Application for Deployment
       run: |
         argocd app create restaurant-app \
-          --repo https://github.com/yourusername/restaurant-app.git \
+          --repo git@github.com:raisalsalim/restaurant-code-base.git \
           --path k8s \
           --dest-server https://kubernetes.default.svc \
           --dest-namespace restaurant
