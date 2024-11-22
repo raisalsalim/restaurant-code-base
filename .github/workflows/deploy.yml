@@ -56,21 +56,10 @@ jobs:
 
     - name: Create Namespace in AKS (if not exists)
       run: |
-        kubectl create namespace restaurant || echo "Namespace 'restaurant' already exists."
+        kubectl create namespace argocd || echo "Namespace 'argocd' already exists."
 
     - name: Install Argo CD CLI
       run: |
         curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.8.5/argocd-linux-amd64
         chmod +x /usr/local/bin/argocd
 
-    - name: Port Forward Argo CD UI
-      run: |
-        kubectl port-forward svc/argocd-server -n argocd 8480:80 &
-        echo "Argo CD is accessible at http://localhost:8480"
-        argocd app create restaurant-app \
-          --repo git@github.com:raisalsalim/restaurant-code-base.git \
-          --path k8s \
-          --dest-server https://kubernetes.default.svc \
-          --dest-namespace restaurant
-        argocd app sync restaurant-app
-        echo "Application deployment initiated through Argo CD."
