@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: raisalacr.azurecr.io/restaurant-frontend:latest
+        image: raisalacr.azurecr.io/restaurant-frontend:BUILD_NUMBER_PLACEHOLDER
         ports:
         - containerPort: 3000
 ---

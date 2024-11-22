@@ -10,47 +10,65 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the codebase
     - name: Checkout Code
       uses: actions/checkout@v3
 
+    # Step 2: Install Podman (for container builds)
     - name: Install Podman
       run: |
         sudo apt-get update
         sudo apt-get -y install podman
 
+    # Step 3: Log in to Azure
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    # Step 4: Set Azure Subscription Context
     - name: Set Azure CLI Context
       run: |
         az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    # Step 5: Log in to ACR
     - name: Log in to ACR
       run: |
         podman login ${{ secrets.ACR_NAME }}.azurecr.io -u $(az acr credential show --name ${{ secrets.ACR_NAME }} --query username -o tsv) -p $(az acr credential show --name ${{ secrets.ACR_NAME }} --query passwords[0].value -o tsv)
 
+    # Step 6: Build and Push Frontend Image
     - name: Build and Push Frontend Image
       run: |
-        FRONTEND_IMAGE_TAG="restaurant-frontend:$(git rev-parse --short HEAD)"
+        FRONTEND_IMAGE_TAG="restaurant-frontend:${{ github.run_number }}"
         podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/$FRONTEND_IMAGE_TAG ./restaurant-menu-frontend
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/$FRONTEND_IMAGE_TAG
-        podman tag ${{ secrets.ACR_NAME }}.azurecr.io/$FRONTEND_IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest
-        podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-frontend:latest
 
+    # Step 7: Build and Push Backend Image
     - name: Build and Push Backend Image
       run: |
-        BACKEND_IMAGE_TAG="restaurant-backend:$(git rev-parse --short HEAD)"
+        BACKEND_IMAGE_TAG="restaurant-backend:${{ github.run_number }}"
         podman build -t ${{ secrets.ACR_NAME }}.azurecr.io/$BACKEND_IMAGE_TAG ./restaurant-menu-backend
         podman push ${{ secrets.ACR_NAME }}.azurecr.io/$BACKEND_IMAGE_TAG
-        podman tag ${{ secrets.ACR_NAME }}.azurecr.io/$BACKEND_IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
-        podman push ${{ secrets.ACR_NAME }}.azurecr.io/restaurant-backend:latest
 
-    - name: Set Up Kubernetes Context & Apply Deployment
+    # Step 8: Clone the Kubernetes Manifest Repository
+    - name: Clone Manifest Repository
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
-        export KUBECONFIG=$(pwd)/kubeconfig.yaml
-        kubectl config use-context aks-backend-cluster
-        kubectl get nodes
-        kubectl apply -f ./k8s/restaurant-app.yaml
+        git clone git@github.com:raisalsalim/restaurant-manifests.git manifests-repo
+        cd manifests-repo
+        git checkout main
+
+    # Step 9: Update Image Tags in Manifests
+    - name: Update Image Tags in Manifests
+      run: |
+        sed -i "s|image: raisalacr.azurecr.io/restaurant-backend:.*|image: raisalacr.azurecr.io/restaurant-backend:${{ github.run_number }}|g" manifests-repo/backend.yaml
+        sed -i "s|image: raisalacr.azurecr.io/restaurant-frontend:.*|image: raisalacr.azurecr.io/restaurant-frontend:${{ github.run_number }}|g" manifests-repo/frontend.yaml
+
+    # Step 10: Commit and Push Updated Manifests
+    - name: Commit and Push Updated Manifests
+      run: |
+        cd manifests-repo
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Update manifests with build number ${{ github.run_number }}"
+        git push origin main
