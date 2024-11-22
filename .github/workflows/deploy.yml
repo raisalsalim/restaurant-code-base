@@ -72,3 +72,10 @@ jobs:
         git commit -m "Update manifests with build number ${{ github.run_number }}"
         git push https://${{ secrets.MANIFESTS_PUSH_TOKEN }}@github.com/raisalsalim/restaurant-manifests.git main
        
+    - name: Set Up Kubernetes Context & Apply Deployment
+      run: |
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
+        export KUBECONFIG=$(pwd)/kubeconfig.yaml
+        kubectl config use-context aks-backend-cluster
+        kubectl get nodes
+        kubectl apply -f ./k8s/restaurant-app.yaml
