@@ -56,11 +56,11 @@ jobs:
           echo "Invalid kubeconfig!" >&2
           exit 1
         fi
-            
+
         kubectl cluster-info
         kubectl config use-context aks-backend-cluster
         kubectl get nodes
         kubectl create namespace argocd || echo "Namespace 'argocd' already exists."
-        curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.8.5/argocd-linux-amd64
-        chmod +x /usr/local/bin/argocd
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        kubectl rollout status deployment/argocd-server -n argocd
 
