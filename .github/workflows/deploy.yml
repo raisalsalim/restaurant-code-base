@@ -67,16 +67,10 @@ jobs:
       run: |
         kubectl port-forward svc/argocd-server -n argocd 8480:80 &
         echo "Argo CD is accessible at http://localhost:8480"
-
-    - name: Create Argo CD Application for Deployment
-      run: |
         argocd app create restaurant-app \
           --repo git@github.com:raisalsalim/restaurant-code-base.git \
           --path k8s \
           --dest-server https://kubernetes.default.svc \
           --dest-namespace restaurant
-
-    - name: Sync Application via Argo CD
-      run: |
         argocd app sync restaurant-app
         echo "Application deployment initiated through Argo CD."
