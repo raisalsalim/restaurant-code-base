@@ -40,3 +40,20 @@ resource "kubernetes_secret" "db_credentials" {
 
   type = "Opaque"
 }
+
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
+  }
+}
+
+resource "helm_release" "argocd" {
+  name       = "argocd"
+  namespace  = kubernetes_namespace.argocd.metadata[0].name
+  chart      = "./kubernetes/argo-cd" # Path to the ArgoCD chart
+
+  set {
+    name  = "server.service.type"
+    value = "ClusterIP" # Use ClusterIP instead of LoadBalancer
+  }
+}
