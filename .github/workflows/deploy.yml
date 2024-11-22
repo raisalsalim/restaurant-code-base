@@ -51,15 +51,16 @@ jobs:
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
+      
+        if ! kubectl config view; then
+          echo "Invalid kubeconfig!" >&2
+          exit 1
+        fi
+            
+        kubectl cluster-info
         kubectl config use-context aks-backend-cluster
         kubectl get nodes
-
-    - name: Create Namespace in AKS (if not exists)
-      run: |
         kubectl create namespace argocd || echo "Namespace 'argocd' already exists."
-
-    - name: Install Argo CD CLI
-      run: |
         curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.8.5/argocd-linux-amd64
         chmod +x /usr/local/bin/argocd
 
