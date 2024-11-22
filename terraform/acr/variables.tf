@@ -44,5 +44,5 @@ variable "aks_cluster_name" {
 variable "aks_principal_id" {
   description = "The principal ID of the AKS managed identity"
   type        = string
-  default     = "972b766f-f817-4a03-862e-084dff5f2e8f"
+  default     = "088e4770-0219-43ba-95e2-e3167c43a937"
 }
