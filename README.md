@@ -104,9 +104,9 @@ GitHub Actions will automatically:
 
 The Kubernetes manifests in k8s/ are applied to deploy the backend and frontend:
 ```
-$ kubectl apply \-f k8s/frontend.yaml
+$ kubectl apply -f k8s/frontend.yaml
 
-$ kubectl apply \-f k8s/backend.yaml
+$ kubectl apply -f k8s/backend.yaml
 ```
 #### **Access the Application**
 
