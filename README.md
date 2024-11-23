@@ -118,9 +118,9 @@ Access the app at:
 
 http://\<EXTERNAL\_IP\>:3000
 
-**Frontend (Next.js): [http://20.235.195.125:3000/](http://20.235.195.125:3000/)**
+**Frontend (Next.js): [http://20.235.213.173:3000/](http://20.235.195.125:3000/)**
 
-**Backend API (Django): [http://20.235.195.143:8000/api/menu-items/](http://20.235.195.143:8000/api/menu-items/)**
+**Backend API (Django): [http://4.224.73.79:8000/api/menu-items/](http://20.235.195.143:8000/api/menu-items/)**
 
 ## 
 
